@@ -36,13 +36,17 @@
                 
                 <h1 class="text-gray-800 text-3xl md:text-5xl mb-1.5">Connecting at Kings Hope Church</h1>
             </header>
-        <main class="px-2 my-5 sm:p-4 max-w-5xl mx-auto w-full" x-data="{ errorMsg: errorMsg}">
+            {{-- Search Area --}}
+        <main class="px-2 my-5 sm:p-4 max-w-5xl mx-auto w-full" x-data="{ 
+            errorMsg: errorMsg,
+            activeData: {'q':null, 'p':2, 'results_count':96, 'range':'50-96', 'more':false},
+            }">
             <div class="p-2 flex flex-row w-full bg-white justify-center rounded-t-md shadow">
                 <h2 class="text-gray-800 text-2xl">Search for others in our fellowship</h2>
             </div>
             <div class="flex flex-row w-full bg-white sticky z-20">
-                <form class="bg-white border-gray-200 border p-3 w-full">
-                    <input type="hidden">
+                <form @submit.prevent="update($el)" @serach-content.window="update($el)" :class="{'pulse pulse-xs': loadingContent}" class="bg-white border-gray-200 border p-3 w-full">
+                    <input name='p' type="hidden" value='1' hidden="1" x-model="activeData.p">
                     <div class="space-y-1 w-full">
                         <div class="h-14 flex relative rounded-md shadow-sm  text-base">
                             <div class="flex items-center justify-center rounded-md text-gray-400 select-none w-10 absolute inset-y-0 left-0">
@@ -52,20 +56,20 @@
                                     </svg>
                                 </span>
                             </div>
-                            <input placeholder="Search" aria-label="Search" class="border-gray-300 placeholder-gray-400 text-gray-800 text-base block w-full rounded-1-md pl-14">
+                            <input name='q' placeholder="Search" type='text'value id='q' @input.debounce="$dispatch('search-content')" :placeholder='loadingContent ? "Searching..." : "Search"' aria-label="Search" class="border-gray-300 placeholder-gray-400 text-gray-800 text-base block w-full rounded-1-md pl-14">
                             <div class="bg-gray-100 border border-gray-300 border-1-0 flex items-center justify-center px-3 rounded-r-md text-gray-700 select-none">
                                 <span class="whitespace-nowrap space-x-1 flex items-center">
-                                    <button class="h-6 rounded-md text-gray-200" disabled>
+                                    <button @click.prevent ="activeData.p--; $nextTick(() => $dispatch('search-content'))" :class="{'text-gray-200' : activeData.p < 2}" class="h-6 rounded-md text-amber-400" :disabled='activeData.p < 2'>
                                         <span class="icon w-6 h-6 inline-block">
                                             <svg class="w-full" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
                                         </span>
                                     </button>
                                     <span class="hidden sm:inline leading-5 text-gray-500">
-                                        <span class="text-gray-600">1-50</span>
+                                        <span class="text-gray-600" x-text='activeData.range'></span>
                                          of 
-                                        <span class="text-gray-600">112</span>
+                                        <span class="text-gray-600" x-text='activeData.results_count'></span>
                                     </span>
-                                    <button class="h-6 text-amber-400 rounded-md">
+                                    <button @click.prevent="dynamicData.p++; $nextTick(() => $dispatch('search-content'))" :class="{'text-gray-200': !activeData.more}" class="h-6 text-amber-400 focus:ring-2 rounded-md" :disabled='!activeData.more'>
                                         <span class=" icon w-6 h-6 inline-block">
                                             <svg class="w-full" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
                                         </span>
@@ -242,10 +246,11 @@
         </main>
     </body>
     <script>
-        let contactData = {{ Js::from($data) }}
-        let errorMsg = ""
+        let loadingContent = false;
+        let contactData = {{ Js::from($data) }};
+        let errorMsg = "";
         if (contactData['error'] != null) {
-            errorMsg = contactData['error']
+            errorMsg = contactData['error'];
         }
     </script>
 </html>
