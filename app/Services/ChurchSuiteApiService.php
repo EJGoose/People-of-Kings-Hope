@@ -36,7 +36,7 @@ class ChurchSuiteApiService{
         }
     }
 
-    public function getContacts($page = 1, $q = 'a') {
+    public function getContacts($page, $q) {
         $client = new Client();
         try{
             $response = $client->request('GET', 'https://api.churchsuite.com/v2/addressbook/contacts?' . "page=$page" . "&q=$q", [

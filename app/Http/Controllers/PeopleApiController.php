@@ -110,9 +110,9 @@ class PeopleApiController extends Controller{
         return $processedData;
     }
 
-    public function getData()
+    public function getData($page = 1, $q = 'a')
     {
-        $data = $this->apiService->getContacts();
+        $data = $this->apiService->getContacts($page, $q);
         
         $processedData = $this->formatData($data);
 
