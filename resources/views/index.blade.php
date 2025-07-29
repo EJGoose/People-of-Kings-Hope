@@ -39,13 +39,13 @@
             {{-- Search Area --}}
         <main class="px-2 my-5 sm:p-4 max-w-5xl mx-auto w-full" x-data="{ 
             errorMsg: errorMsg,
-            activeData: {'q':null, 'p':2, 'results_count':96, 'range':'50-96', 'more':false},
+            activeData: {'q':null, 'p':pageData.page, 'results_count':pageData.num_results, 'range':range, 'more':pageData.next_page},
             }">
             <div class="p-2 flex flex-row w-full bg-white justify-center rounded-t-md shadow">
                 <h2 class="text-gray-800 text-2xl">Search for others in our fellowship</h2>
             </div>
             <div class="flex flex-row w-full bg-white sticky z-20">
-                <form @submit.prevent="update($el)" @serach-content.window="update($el)" :class="{'pulse pulse-xs': loadingContent}" class="bg-white border-gray-200 border p-3 w-full">
+                <form action="" method="GET" id="search-content" @submit.prevent="update($el)" @serach-content.window="update($el)" :class="{'pulse pulse-xs': loadingContent}" class="bg-white border-gray-200 border p-3 w-full">
                     <input name='p' type="hidden" value='1' hidden="1" x-model="activeData.p">
                     <div class="space-y-1 w-full">
                         <div class="h-14 flex relative rounded-md shadow-sm  text-base">
@@ -64,7 +64,7 @@
                                             <svg class="w-full" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
                                         </span>
                                     </button>
-                                    <span class="hidden sm:inline leading-5 text-gray-500">
+                                    <span class="hidden sm:inline leading-5 text-gray-400">
                                         <span class="text-gray-600" x-text='activeData.range'></span>
                                          of 
                                         <span class="text-gray-600" x-text='activeData.results_count'></span>
@@ -246,11 +246,19 @@
         </main>
     </body>
     <script>
+        //count better
         let loadingContent = false;
-        let contactData = {{ Js::from($data) }};
+        let contactData = {{ Js::from($apiResponse['data']) }};
+        console.log(contactData.length);
+        let pageData = {{ Js::from($apiResponse['pagination']) }};
+        console.log(pageData);
+        let pageStart = pageData.page > 1 ? pageData.page * pageData.per_page : pageData.page;
+        let pageEnd = (pageStart + pageData.per_page) < pageData.num_results ? pageStart + pageData.per_page : pageData.num_results ;
+        let range = `${pageStart}-${pageEnd}`;
         let errorMsg = "";
         if (contactData['error'] != null) {
             errorMsg = contactData['error'];
         }
+        
     </script>
 </html>

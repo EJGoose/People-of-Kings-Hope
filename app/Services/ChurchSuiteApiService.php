@@ -38,12 +38,24 @@ class ChurchSuiteApiService{
 
     public function getContacts($page, $q) {
         $client = new Client();
+        $query = $page != NULL ? '?'. "page=$page" : '?';
+        $query = $q != NULL ? $query . "&q=$q" : $query;
+
         try{
-            $response = $client->request('GET', 'https://api.churchsuite.com/v2/addressbook/contacts?' . "page=$page" . "&q=$q", [
+            if($query != '?'){
+                $response = $client->request('GET', 'https://api.churchsuite.com/v2/addressbook/contacts' . "$query", [
                 'headers' => [
                 'Authorization' => 'Bearer ' . $this->accessToken->getToken(),
                 ],
             ]);
+            } else {
+
+                $response = $client->request('GET', 'https://api.churchsuite.com/v2/addressbook/contacts', [
+                    'headers' => [
+                    'Authorization' => 'Bearer ' . $this->accessToken->getToken(),
+                    ],
+                ]);
+            }
 
             return json_decode($response->getBody()->getContents(), true);
 

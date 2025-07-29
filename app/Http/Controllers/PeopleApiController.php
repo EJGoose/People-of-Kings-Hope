@@ -104,19 +104,19 @@ class PeopleApiController extends Controller{
         }
 
 
-        $processedData = $contactList;
+        $processedData = ['data' => $contactList, 'pagination' => $pageData];
 
 
         return $processedData;
     }
 
-    public function getData($page = 1, $q = 'a')
+    public function getData($page = NULL, $q = NULL)
     {
         $data = $this->apiService->getContacts($page, $q);
         
         $processedData = $this->formatData($data);
 
-        return view('index', ['data' => $processedData]);
+        return view('index', ['apiResponse' => $processedData]);
     }
 }
 ?>
