@@ -1,5 +1,5 @@
 @php    
-$bgImg = asset('storage/assests/home_worship.jpg');
+$bgImg = asset('storage/assests/home_worship.webp');
 $logo = asset('storage/assests/KH_Main.png');
 @endphp
 <div class="bg-fixed bg-cover fixed inset-0 opacity-25" style="background-image: url({{ $bgImg }});"></div>

@@ -24,29 +24,29 @@
     </head>
     <body>
         <x-header heading="Connecting at Kings Hope Church"/>
-        <main class="px-2 my-5 sm:p-4 max-w-5xl mx-auto w-full" x-data="form_handler({{ Js::from($apiResponse['data'])  }}, {{ Js::from($apiResponse['pagination'])  }})">
+        <main class="px-2 my-5 sm:p-4 max-w-5xl mx-auto w-full" x-data="form_handler({{ Js::from($apiResponse['data'])  }}, {{ Js::from($apiResponse['pagination']) }})">
             <div class="p-2 flex flex-row w-full bg-white justify-center rounded-t-md shadow">
                 <h2 class="text-gray-800 text-2xl">Search for others in our fellowship</h2>
             </div>
             <div class="flex flex-row w-full bg-white sticky z-20">
-                <form action="" method="GET" id="search-content" @submit.prevent="update($el)" @search-content.window="update($el)" :class="{'animate-pulse': loadingContent}" class="bg-white border-gray-200 border p-3 w-full">
+                <form action="" method="GET" id="search-content"  :class="{'animate-pulse': loadingContent}" class="bg-white border-gray-200 border p-3 w-full">
                     <input name='p' type="hidden" value='1' hidden="1" x-model="currentPage">
                     <div class="space-y-1 w-full">
-                        <div class="h-14 flex relative rounded-md shadow-sm  text-base">
+                        <div class="h-14 flex relative rounded-md shadow-sm  text-base focus-within:border-blue-900 focus-within:ring focus-within:ring-sky-700 focus-within:ring-opacity-50 focus-within:z-10">
                             <div class="flex items-center justify-center rounded-md text-gray-400 select-none w-10 absolute inset-y-0 left-0">
                                 {{-- search icon --}}
-                                <span :class="loadingContent ? 'animate-bounce':''" class="icon w-6 h-6 inline-block">
+                                <span :class="loadingContent ? 'animate-bounce':''" class="w-6 h-6 inline-block">
                                     <svg xmlns="http://www.w3.org/2000/svg"     fill="currentColor" viewBox="0 0 16 16">
                                         <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
                                     </svg>
                                 </span>
                             </div>
-                            <input name='q' placeholder="Search" value type='text' id='q' @input.debounce.500ms="submit()" :placeholder='loadingContent ? "Searching..." : "Search"' aria-label="Search" x-model="searchQuery" class="border-gray-300 placeholder-gray-400 text-gray-800 text-base block w-full rounded-1-md pl-14">
+                            <input name='q' placeholder="Search" value type='text' id='q' @input.debounce.500ms="submit()" :placeholder='loadingContent ? "Searching..." : "Search"' aria-label="Search" x-model="searchQuery" class="border-gray-300 placeholder-gray-400 text-gray-800 text-base block w-full rounded-1-md pl-14 focus:outline-none focus:ring-0">
                             <div class="bg-gray-100 border border-gray-300 border-1-0 flex items-center justify-center px-3 rounded-r-md text-gray-700 select-none">
                                 <span class="whitespace-nowrap space-x-1 flex items-center">
-                                    <button @click.prevent ="currentPage--; $nextTick(() => submit())" :class="{'text-gray-200' : currentPage < 2}" class="h-6 rounded-md text-blue-700" :disabled='currentPage < 2'>
+                                    <button @click.prevent ="currentPage--; $nextTick(() => submit())" :class="{'text-gray-200' : currentPage < 2}" class="h-6 rounded-md text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-800" :disabled='currentPage < 2'>
                                         {{-- left arrow icon --}}
-                                        <span class="icon w-6 h-6 inline-block">
+                                        <span class="w-6 h-6 inline-block">
                                             <svg class="w-full" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
                                         </span>
                                     </button>
@@ -55,9 +55,9 @@
                                             of 
                                         <span class="text-gray-600" x-text='activeData.pageEnd'></span>
                                     </span>
-                                    <button @click.prevent="currentPage++; $nextTick(() => submit())" :class="{'text-gray-200': !activeData.more}" class="h-6 text-blue-700 focus:ring-2 rounded-md" :disabled='!activeData.more'>
+                                    <button @click.prevent="currentPage++; $nextTick(() => submit())" :class="{'text-gray-200': !activeData.more}" class="h-6 text-blue-700 focus:ring-2 focus:ring-blue-800 rounded-md focus:outline-none" :disabled='!activeData.more'>
                                         {{-- right arrow icon --}}
-                                        <span class=" icon w-6 h-6 inline-block">
+                                        <span class=" w-6 h-6 inline-block">
                                             <svg class="w-full" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
                                         </span>
                                         </button>
@@ -79,7 +79,7 @@
                     <table :class='loadingContent ? "animate-pulse bg-gray-200" : "bg-white"' class="w-full shadow">
                         <tbody class="divide-y divide-gray-100">
                             <template x-for='contact in contactData' :key='contact.id'>
-                                <tr x-data="{open: false }" @click.prevent="open =!open" @click.outside="open = false" :class='{"bg-opacity-50 bg-sky-50" :open}' class="cursor-pointer focus:outline-none focus:ring-2 rounded hover:bg-opacity-50 focus:bg-opacity-50 hover:bg-sky-50 focus:bg-sky-50 relative">
+                                <tr x-data="{open: false }" @click.prevent="open =!open" @click.outside="open = false" :class='{"bg-opacity-50 bg-sky-50" :open}' class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-800 rounded hover:bg-opacity-50 focus:bg-opacity-50 hover:bg-sky-50 focus:bg-sky-50 relative">
                                     <td class="px-3 py-2 ">
                                         <div class="flex space-x-4 items-center">
                                             <span role="presentation" arai-hidden="true" class="h-8 text-base w-8 flex relative flex-shrink-0 ">
@@ -150,7 +150,7 @@
                                                                         </template>
                                                                         <template x-if="!contact.image">
                                                                             <span class="rounded-full uppercase bg-sky-50 border-transparent text-blue-700 font-light bg-cover bg-center flex flex-col items-center justify-center leading-none w-full h-full">
-                                                                                <span x-text='contact.initials'></span>
+                                                                                <span class="pb-2" x-text='contact.initials'></span>
                                                                             </span>
                                                                         </template>
                                                                     </span>

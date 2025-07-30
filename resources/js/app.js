@@ -12,10 +12,6 @@ document.addEventListener('alpine:init', () => {
             return Math.ceil(this.pageData.num_results/this.pageData.per_page);
         },
 
-        get range(){
-            return `${this.pageStart}-${this.pageEnd}`;
-        },
-
         get errorMsg(){
             return this.contactData['error'] != null ? this.contactData['error'] : ""
         },
