@@ -17,6 +17,9 @@
                 
         @endif
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        <style>
+            [x-cloak] {display: none !important;}
+        </style>
     </head>
     <body>
         @php
@@ -37,29 +40,26 @@
                 <h1 class="text-gray-800 text-3xl md:text-5xl mb-1.5">Connecting at Kings Hope Church</h1>
             </header>
             {{-- Search Area --}}
-        <main class="px-2 my-5 sm:p-4 max-w-5xl mx-auto w-full" x-data="{ 
-            errorMsg: errorMsg,
-            activeData: {'q':null, 'p':pageData.page, 'results_count':pageData.num_results, 'range':range, 'more':pageData.next_page},
-            }">
+        <main class="px-2 my-5 sm:p-4 max-w-5xl mx-auto w-full" x-data="form_handler({{ Js::from($apiResponse['data']) }}, {{ Js::from($apiResponse['pagination']) }})">
             <div class="p-2 flex flex-row w-full bg-white justify-center rounded-t-md shadow">
                 <h2 class="text-gray-800 text-2xl">Search for others in our fellowship</h2>
             </div>
             <div class="flex flex-row w-full bg-white sticky z-20">
-                <form action="" method="GET" id="search-content" @submit.prevent="update($el)" @serach-content.window="update($el)" :class="{'pulse pulse-xs': loadingContent}" class="bg-white border-gray-200 border p-3 w-full">
-                    <input name='p' type="hidden" value='1' hidden="1" x-model="activeData.p">
+                <form action="" method="GET" id="search-content" @submit.prevent="update($el)" @search-content.window="update($el)" :class="{'animate-pulse': loadingContent}" class="bg-white border-gray-200 border p-3 w-full">
+                    <input name='p' type="hidden" value='1' hidden="1" x-model="currentPage">
                     <div class="space-y-1 w-full">
                         <div class="h-14 flex relative rounded-md shadow-sm  text-base">
                             <div class="flex items-center justify-center rounded-md text-gray-400 select-none w-10 absolute inset-y-0 left-0">
-                                <span class="icon w-6 h-6 inline-block">
+                                <span :class="loadingContent ? 'animate-bounce':''" class="icon w-6 h-6 inline-block">
                                     <svg xmlns="http://www.w3.org/2000/svg"     fill="currentColor" viewBox="0 0 16 16">
                                         <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
                                     </svg>
                                 </span>
                             </div>
-                            <input name='q' placeholder="Search" type='text'value id='q' @input.debounce="$dispatch('search-content')" :placeholder='loadingContent ? "Searching..." : "Search"' aria-label="Search" class="border-gray-300 placeholder-gray-400 text-gray-800 text-base block w-full rounded-1-md pl-14">
+                            <input name='q' placeholder="Search" value type='text' id='q' @input.debounce.500ms="submit()" :placeholder='loadingContent ? "Searching..." : "Search"' aria-label="Search" x-model="searchQuery" class="border-gray-300 placeholder-gray-400 text-gray-800 text-base block w-full rounded-1-md pl-14">
                             <div class="bg-gray-100 border border-gray-300 border-1-0 flex items-center justify-center px-3 rounded-r-md text-gray-700 select-none">
                                 <span class="whitespace-nowrap space-x-1 flex items-center">
-                                    <button @click.prevent ="activeData.p--; $nextTick(() => $dispatch('search-content'))" :class="{'text-gray-200' : activeData.p < 2}" class="h-6 rounded-md text-amber-400" :disabled='activeData.p < 2'>
+                                    <button @click.prevent ="currentPage--; $nextTick(() => submit())" :class="{'text-gray-200' : currentPage < 2}" class="h-6 rounded-md text-amber-400" :disabled='currentPage < 2'>
                                         <span class="icon w-6 h-6 inline-block">
                                             <svg class="w-full" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
                                         </span>
@@ -69,7 +69,7 @@
                                          of 
                                         <span class="text-gray-600" x-text='activeData.results_count'></span>
                                     </span>
-                                    <button @click.prevent="dynamicData.p++; $nextTick(() => $dispatch('search-content'))" :class="{'text-gray-200': !activeData.more}" class="h-6 text-amber-400 focus:ring-2 rounded-md" :disabled='!activeData.more'>
+                                    <button @click.prevent="currentPage++; $nextTick(() => submit())" :class="{'text-gray-200': !activeData.more}" class="h-6 text-amber-400 focus:ring-2 rounded-md" :disabled='!activeData.more'>
                                         <span class=" icon w-6 h-6 inline-block">
                                             <svg class="w-full" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
                                         </span>
@@ -84,11 +84,14 @@
                     </div>
                 </form>
             </div>
-            <div x-data ="{ addressBook: contactData}">
+            <div>
+                <div x-cloak x-show="contactData.length<1 ? true : false" class="p-4 w-full bg-amber-50 flex justify-center shadow rounded-md">
+                    <span>Your search has not returned any results</span>
+                </div>
                 <template x-if="!errorMsg">
-                    <table class="w-full rounded-b-md bg-white shadow">
+                    <table :class='loadingContent ? "animate-pulse bg-gray-200" : "bg-white"' class="w-full rounded-b-md shadow">
                         <tbody class="divide-y divide-gray-100">
-                            <template x-for='contact in addressBook' :key='contact.id'>
+                            <template x-for='contact in contactData' :key='contact.id'>
                                 <tr x-data="{open: false }" @click.prevent="open =!open" @click.outside="open = false" :class='{"bg-opacity-50 bg-amber-50" :open}' class="cursor-pointer focus:outline-none focus:ring-2 rounded hover:bg-opacity-50 focus:bg-opacity-50 hover:bg-amber-50 focus:bg-amber-50 relative">
                                     <td class="px-3 py-2 ">
                                         <div class="flex space-x-4 items-center">
@@ -245,20 +248,4 @@
             </div>
         </main>
     </body>
-    <script>
-        //count better
-        let loadingContent = false;
-        let contactData = {{ Js::from($apiResponse['data']) }};
-        console.log(contactData.length);
-        let pageData = {{ Js::from($apiResponse['pagination']) }};
-        console.log(pageData);
-        let pageStart = pageData.page > 1 ? pageData.page * pageData.per_page : pageData.page;
-        let pageEnd = (pageStart + pageData.per_page) < pageData.num_results ? pageStart + pageData.per_page : pageData.num_results ;
-        let range = `${pageStart}-${pageEnd}`;
-        let errorMsg = "";
-        if (contactData['error'] != null) {
-            errorMsg = contactData['error'];
-        }
-        
-    </script>
 </html>

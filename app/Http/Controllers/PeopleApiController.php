@@ -110,6 +110,16 @@ class PeopleApiController extends Controller{
         return $processedData;
     }
 
+    public function search(Request $request){
+        Log::info($request->all());
+        $q = $request->q;
+        $page = $request->p;
+        $data = $this->apiService->getContacts($page, $q);
+        $processedData = $this->formatData($data);
+
+        return ['apiResponse' => $processedData];
+    }
+
     public function getData($page = NULL, $q = NULL)
     {
         $data = $this->apiService->getContacts($page, $q);
