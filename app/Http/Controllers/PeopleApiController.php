@@ -25,11 +25,11 @@ class PeopleApiController extends Controller{
                 $combinedAddress = $i < 1 ? $line : $combinedAddress . ", " . $line;
                 $lineNoSpaces = str_replace(" ", "+", $line);
                 $addressUrl =  $i < 1 ? $addressUrl . $lineNoSpaces : $addressUrl . "%2C+" . $lineNoSpaces;
+                $i++;
             } else {
                 $i++;
                 continue;
             }
-            $i++;
         }
         if ($address['postcode'] != ""){
             $combinedAddress = $combinedAddress . ", " . $address['postcode'];
@@ -111,7 +111,6 @@ class PeopleApiController extends Controller{
     }
 
     public function search(Request $request){
-        Log::info($request->all());
         $q = $request->q;
         $page = $request->p;
         $data = $this->apiService->getContacts($page, $q);
