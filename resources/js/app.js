@@ -47,6 +47,7 @@ document.addEventListener('alpine:init', () => {
                 this.currentPage = this.pageData.page > this.pageEnd ? this.pageEnd : this.pageData.page;
 
             } catch (error) {
+                this.contactData = {"error": `Oh dear, that search was invalid, please try again. Error Details: ${error}`};
                 console.error('Search failure:', error);
             } finally {
                 this.loadingContent = false;

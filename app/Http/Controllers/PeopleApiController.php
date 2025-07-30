@@ -14,14 +14,16 @@ class PeopleApiController extends Controller{
         $this->apiService = $ChurchSuiteApiService;
     }
 
+    //make addresses human readable
     private function formatAddress($address){
         $combinedAddress = "";
         $addressUrl ="http://maps.apple.com/?q=";
         $i = 0;
 
         foreach($address as $line){
-            if ($i == 5) break;
+            if ($i == 5) break; //don't process past line 5
             if($line != ""){
+                //create human readable addresss and apple maps url
                 $combinedAddress = $i < 1 ? $line : $combinedAddress . ", " . $line;
                 $lineNoSpaces = str_replace(" ", "+", $line);
                 $addressUrl =  $i < 1 ? $addressUrl . $lineNoSpaces : $addressUrl . "%2C+" . $lineNoSpaces;
@@ -31,17 +33,19 @@ class PeopleApiController extends Controller{
                 continue;
             }
         }
+        //if the postcode exsists add that before the country
         if ($address['postcode'] != ""){
             $combinedAddress = $combinedAddress . ", " . $address['postcode'];
             $lineNoSpaces = str_replace(" ", "+", $address['postcode']);
             $addressUrl =  $addressUrl . "%2C+" . $lineNoSpaces;
         }
+        //if the country exsists add that last
         if ($address['country'] != ""){
             $combinedAddress = $combinedAddress . ", " . $address['country'];
             $lineNoSpaces = str_replace(" ", "+", $address['country']);
             $addressUrl =  $addressUrl . "%2C+" . $lineNoSpaces;
         }
-
+        
         return ["address" => $combinedAddress, "url" => $addressUrl];
     }
 

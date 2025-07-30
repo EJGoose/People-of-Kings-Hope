@@ -66,7 +66,7 @@
                             </div>
                         </div>
                         <template x-if="errorMsg">
-                            <span class="text-red-500 text-xs block px-1 text-wrap" x-text="errorMsg"></span>
+                            <span class="text-red-500 block px-1 text-wrap text-l text-center" x-text="errorMsg"></span>
                         </template>
                     </div>
                 </form>
