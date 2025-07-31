@@ -18,9 +18,6 @@
         <style>
             [x-cloak] {display: none !important;}
         </style>
-        @php    
-            $khcLogo= asset('storage/assests/khc.svg');  
-        @endphp
     </head>
     <body>
         <x-header heading="Connecting at Kings Hope Church"/>
@@ -138,7 +135,7 @@
                                         <div>
                                             <a href="#" :title='contact.name' class="absolute focus:outline-none focus-ring-2-inset-0 rounded hover:bg-opacity-50 hover:bg-cyan-50 focus:bg-cyan-50 mix-blend-darken"></a>
                                             <div x-show="open" x-transition:enter="transtion ease-out duration-300" x-transtion:enter-start="opacity-0" x-transtion:enter-end="opacity-100" x-transition:leave="transition ease-in duration-300" x-transtion:leave-start="opacity-100" x-transtion:leave-end="opacity-0" class="block fixed inset-0 z-40" style="display: none; backdrop-filter: blur(8px);"></div>
-                                            <ul x-show="open" x-transition:enter="transtion ease-out duration-200" x-transtion:enter-start="translate-y-full transform scale-90" x-transtion:enter-end="translate-y-0 transform scale-100" x-transition:leave="transition ease-in duration-100" x-transtion:leave-start="translate-y-0 transform scale-100" x-transtion:leave-end="translate-y-full transform scale-90" class="bottom-0 fixed left-2 p-2 right-2 md:left-1/2 md:top-1/2 md:max-w-lg md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:right-auto md:bottom-auto bg-cyan-50 rounded-md shadow-lg text-base md:text-sm z-50 border">
+                                            <ul x-show="open" class="bottom-0 fixed left-2 p-2 right-2 md:left-1/2 md:top-1/2 md:max-w-lg md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:right-auto md:bottom-auto bg-cyan-50 rounded-md shadow-lg text-base md:text-sm z-50 border-1 border-slate-800">
                                                 <div>
                                                     <div class="relative flex flex-col isolate m-0">
                                                         <div class="p-2 grow flex flex-col space-y-2">
@@ -244,18 +241,7 @@
                     </table>
                 </template>
             </div>
-            <div class="p-2 flex flex-col  w-full bg-white justify-around rounded-b-md shadow">
-                <div class="p-2 flex justify-center ">
-                    <img class="max-w-32" src={{ $khcLogo }} alt="Kings Hope Church Logo"/>
-                </div>
-                <div class="p-2 flex flex-col text-center">
-                    <span class="text-gray-800 text-l">"The church is not just a building it is the people"</span>
-                    <span class="text-gray-800 text-m"> - Pastor Gavin</span>
-                </div>
-                <div class="p-2 flex justify-center text-center">
-                    <span class="text-gray-800 text-sm">© 2025 Kings Hope Church</span>
-                </div>
-            </div>
+                <x-footer/>
         </main>
     </body>
 </html>
